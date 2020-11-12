@@ -1,0 +1,27 @@
+Tanker som vi måtte finde på alternativer til
+	Vi har i vores kode et loop, som tilføjer myre til et array
+	Dette forsøgte vi først at gøre ved kun at bruge dette loop
+	men grundet måden et array fungere på, var vi nød til at
+	lave en metode som istedet opdatere arrayet, for at kunne
+	tilføje de nye elementer.
+
+
+Startede med at have det et program som bare bad om inputs og så 
+lavede en simulation, vi besluttede os for at lave om på det så 
+brugeren kunne redigere nogle værdier og så køre endnu en simulation
+
+Vi endte med at droppe de flere menuer samt ideen om at brugeren 
+skulle kunne redigere enkelte værdier, da dette ville skabe en masse
+rod, da man ikke kun kunne rette colonier uden at rette myre, og 
+andre variabler. 
+menuerne blev til en som kunne køre simulationen eller køre 
+initializeren igen, for at rette værdierne.
+
+Vi har valgt at bibeholde den del af koden som spørger om hvor meget
+en myre kan bære trods at dette kun er vigtigt vis brugeren ikke vil
+have at myren skal kunne bære noget da det ikke gør nogen forskel
+at sætte denne parameter til noget over 1
+
+Vi har valgt ikke at kigge på default methoderne da de ikke var 
+relevante, for vores kode, så vi så ingen grund til at rette dem.
+
