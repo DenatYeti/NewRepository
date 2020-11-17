@@ -27,20 +27,25 @@ public class Simulator{
 		// variables that calls a method once to avoid multiple calls of the same method.	
 		boolean isHome,
 				isStocked,
-				isCarrying;
+				isCarrying,
+				wasHome;
 		
 		Node current; 
 		
 		//alle myrer dør
 		//måske lave en counter som springer dette over på første tick.
+		
 		while (i < ants.length){
 			isHome = ants[i].isAtHome();
 			isStocked = ants[i].home().hasStock();
+			wasHome = ants[i].wasAtHome();
 			if (ants[i] != null){
-				if (isHome && isStocked){
-					this.ants[i].home().consume();
-				}else if(isHome && !(isStocked)){
-					this.ants[i] = null;
+				if (isHome && !(wasHome)){
+					if (isHome && isStocked){
+						this.ants[i].home().consume();
+					}else if(isHome && !(isStocked)){
+						this.ants[i] = null;
+					}
 				}
 			}
 			i = i + 1; 	 
