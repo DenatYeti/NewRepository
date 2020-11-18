@@ -27,7 +27,6 @@ public class Simulator{
 			j = 0,
 			k = 0;
 			
-		double probability;
 		// variables that calls a method once to avoid multiple calls of the same method.	
 		boolean isHome,
 				isStocked,
@@ -39,18 +38,18 @@ public class Simulator{
 			 previous,
 			 n; 
 		Node [] nodes;
-		
-		//alle myrer dør
-		//måske lave en counter som springer dette over på første tick.
+	
 		
 		while (i < ants.length){
-			isHome = ants[i].isAtHome();
-			isStocked = ants[i].home().hasStock();
-			wasHome = ants[i].wasAtHome();
+
 			if (ants[i] != null){
+				isHome = ants[i].isAtHome();
+				isStocked = ants[i].home().hasStock();
+				wasHome = ants[i].wasAtHome();
 				if (isHome && !(wasHome)){
 					if (isHome && isStocked){
-						this.ants[i].home().consume();
+						ants[i].home().consume();
+						ants[i].move(ants[i].current()); 
 					}else if(isHome && !(isStocked)){
 						this.ants[i] = null;
 					}
@@ -59,10 +58,8 @@ public class Simulator{
 			i = i + 1; 	 
 		}
 		//loop that determines the actions of the ant
-		while (j<ants.length){
-			if (ants[j] == null){
-				j = j + 1;
-			}else{
+		while (j < ants.length){
+			if (ants[j] != null){
 				isCarrying = ants[j].carrying(); // updating value to avoid multiple calls.
 				current = ants[j].current();
 				previous = ants[j].previous();
@@ -71,36 +68,52 @@ public class Simulator{
 					ants[j].pickUpSugar(); 
 					current.decreaseSugar();
 					ants[j].move(ants[j].previous());
-					if (ants[j].isAtHome() && ants[j].carrying()){ // checks the precondition. if true drop sugar into the colony.
-						ants[j].dropSugar();
-					}
 				}else if(nodes.length == 1){ //incase of only one adjacent node, move to that node.
 					ants[j].move(nodes[0]);
 				}else{
 					hasMoved = false;
-					while(k < nodes.length && !(hasMoved)){
+					k = 0;
+					while(!(hasMoved) && k < nodes.length){
 						n = nodes[k];
-						probability = probability + formula(n,previous);
-						if(random.coinFlip(probability) && n != previous){
+						if(n != previous && random.coinFlip(formula(n, current, nodes))){
 							ants[j].move(n);
 							hasMoved = true;
-						}else if(k = (nodes.length-1) && n != previous){
-								ants[j].move(n);
-						}else if(k = (nodes.length-1) && n == previous){
-								ants[j].move(nodes[k-1]);
+						}else if(k == nodes.length-1){ // when having reached the final index and not yet satisfied the move reset k and start over.
+							k = 0; 
 						}else{
 							k = k + 1;						
 						}
+						
+						if (hasMoved){ // seperate thing that is only active when an ant moved.
+							graph.raisePheromones(current, ants[j].current(), droppedPheromones);
+						}
 					}
-					
 				}
-			}
+			
+			if (ants[j].isAtHome() && ants[j].carrying()){ // checks the precondition. if true drop sugar into the colony.
+					ants[j].dropSugar();
+					ants[j].home().topUp(carriedSugar);
+					}
+					}
+			j = j + 1;
 		}
 		
 		
 	}
 	
-	private double formula(Node n);
+	private double formula(Node n, Node current, Node [] nodes){
+		double numerator = graph.pheromoneLevel(current, n) + 1,
+			   denominator = 0,
+			   probability = 0;
+		int i = 0;
+		
+		while(i < nodes.length){
+			denominator = denominator + graph.pheromoneLevel(current, nodes[i]) + 1;
+			i = i + 1;
+		}
+		probability = numerator / denominator;
+		return probability;
+	}
 	
 
 }

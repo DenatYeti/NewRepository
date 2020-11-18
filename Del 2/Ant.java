@@ -13,7 +13,7 @@ public class Ant{
 	}
 	
 	public boolean carrying(){
-		return (sugar == 1);
+		return (sugar >= 1);
 	}
 	
 	public boolean isAtHome(){
@@ -24,7 +24,6 @@ public class Ant{
 	}
 	
 	public void dropSugar(){
-			home.topUp(this.sugar);
 			this.sugar = 0;
 	}
 	//precondition there is an edge between the two nodes
