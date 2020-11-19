@@ -114,6 +114,4 @@ public class Simulator{
 		probability = numerator / denominator;
 		return probability;
 	}
-	
-
 }
