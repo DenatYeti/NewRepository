@@ -1,15 +1,23 @@
+/**
+*@Supervisor Kasper Beider
+*@author Andreas Rosenstjerne og Frederik Dam
+* Provider class for run simulation that simulates ant colonies, gathering sugar, spreading pheromones, eating and dying.
+* It also serves as the client class for, some of the other classes like Graph and ant.
+* @version 2.4
+*/
+
 public class Simulator{
-	
+	// Declaring class attributes, some of which are final since they are not to be changed after being assigned.
 	private final Graph graph;
 	
-	private Ant[] ants;
+	private Ant[] ants; //The only non final class, as we need to update the ants inside of the array. 
 	
 	private final int carriedSugar,
 					  droppedPheromones;
 
 	/**
 	*Constructor for the class, that creates an object simulator with the given values.
-	*@precondition every ants home is a node in the graph.
+	*@precondition Every ants home is a node in the graph.
 	*/
 	public Simulator(Graph graph, Ant[] ants, int carriedSugar, int droppedPheromones){
 		
@@ -19,19 +27,74 @@ public class Simulator{
 		this.droppedPheromones = droppedPheromones;
 	}
 
-	
+	/*
+	* Moves the simulation along one unit of time, updating the pheromones, as well as the status of the ants.
+	* This includes moving ants.
+	*/
 	public void tick(){
-		this.graph.tick();
-		RandomUtils random = new RandomUtils();
-		int i = 0,
-			j = 0,
-			k = 0;
-			
-		// variables that calls a method once to avoid multiple calls of the same method.	
+		this.graph.tick(); //Calls the method from graph, that lowers the pheromone level on all edges that have pheromones.
+		eat(); 
+		moveAnt();	
+	}
+	
+	/*
+	* A method that takes care of the calculations for the probability of the ants moving to a specific node.
+	* It's parameters are numerous, as to both know the node we wish to check the move for, the current node we are on and its adjacent nodes,
+	* As well as its previous node.
+	*/
+	private double formula(Node n, Node current, Node [] nodes, Node previous, int j){
+		double numerator = graph.pheromoneLevel(current, n) + 1, // Using the graph that we already know, from the constructor, to get the pheromones.
+			   denominator = 0,
+			   probability = 0;
+		int i = j; // Assigning a starting value.
+		
+		// A Loop that gathers the number needed for the denominator of the equation.
+		while(i < nodes.length){
+			if (nodes[i] != previous){ // We use this if to skip over the ants previous node as this node is not a possible move unless specified.
+			// Starting from the node we are looking at in the array, and skipping the ants previous, means we ensure a move.
+			denominator = denominator + graph.pheromoneLevel(current, nodes[i]) + 1;
+			}
+			i = i + 1;
+		}
+		probability = numerator / denominator; // Uses the two numbers to get the probablity. 
+		return probability;
+	}
+	
+	/*
+	* A Method that checks if the ants need to eat, and also kills them if they arent able.
+	*/
+	private void eat () {
+		// Declaring some variables that we assigning later to avoid repeated calls of variables that havent changed.
 		boolean isHome,
-				isStocked,
-				isCarrying,
-				wasHome,
+				isStocked;
+		
+		int i = 0;
+		while (i < ants.length){ //Going through each individual ant.
+			if (ants[i] != null){ //This checks if the ant is dead and skips it if it is.
+				isStocked = ants[i].home().hasStock();
+				if (ants[i].isAtHome() && !(ants[i].wasAtHome())){ // If ant is home and wasnt home 
+					if (isStocked){ // If there is sugar in stock, the ant eats and its value is changed to make sure its wont eat again.
+						ants[i].home().consume(); 
+						ants[i].move(ants[i].current()); 
+					}else{ // If there isnt sugar in stock we kill the ant.
+						this.ants[i] = null;
+					}
+				}
+			}
+			i = i + 1;
+		}
+	}
+	
+	
+	/*
+	* A method that goes through the individual ants to determine their moves.
+	*/
+	private void moveAnt() {
+		RandomUtils random = new RandomUtils(); // Declaring an instance of randomutils for later use.
+		int i = 0,
+			j = 0;
+		
+		boolean isCarrying,
 				hasMoved;
 		
 		Node current,
@@ -40,78 +103,49 @@ public class Simulator{
 		Node [] nodes;
 	
 		
-		while (i < ants.length){
 
+		//Loop that determines the actions of the ant
+		while (i < ants.length){
 			if (ants[i] != null){
-				isHome = ants[i].isAtHome();
-				isStocked = ants[i].home().hasStock();
-				wasHome = ants[i].wasAtHome();
-				if (isHome && !(wasHome)){
-					if (isHome && isStocked){
-						ants[i].home().consume();
-						ants[i].move(ants[i].current()); 
-					}else if(isHome && !(isStocked)){
-						this.ants[i] = null;
-					}
-				}
-			}
-			i = i + 1; 	 
-		}
-		//loop that determines the actions of the ant
-		while (j < ants.length){
-			if (ants[j] != null){
-				isCarrying = ants[j].carrying(); // updating value to avoid multiple calls.
-				current = ants[j].current();
-				previous = ants[j].previous();
-				nodes = graph.adjacentTo(ants[j].current());
-				if(!(isCarrying) && current.sugar() > 0){
-					ants[j].pickUpSugar(); 
+				isCarrying = ants[i].carrying(); // Updating value to avoid multiple calls.
+				current = ants[i].current();
+				previous = ants[i].previous();
+				nodes = graph.adjacentTo(ants[i].current());
+				if(!(isCarrying) && current.sugar() > 0){ // If the ant isnt carrying but is on a node with sugar its picks it up
+					ants[i].pickUpSugar(); 
 					current.decreaseSugar();
-					ants[j].move(ants[j].previous());
-				}else if(nodes.length == 1){ //incase of only one adjacent node, move to that node.
-					ants[j].move(nodes[0]);
-				}else{
-					hasMoved = false;
-					k = 0;
-					while(!(hasMoved) && k < nodes.length){
-						n = nodes[k];
-						if(n != previous && random.coinFlip(formula(n, current, nodes))){
-							ants[j].move(n);
-							hasMoved = true;
-						}else if(k == nodes.length-1){ // when having reached the final index and not yet satisfied the move reset k and start over.
-							k = 0; 
+					ants[i].move(ants[i].previous()); // Do a predetermined move.
+				}else if(nodes.length == 1){ //Incase of only one adjacent node, move to that node.
+					ants[i].move(nodes[0]);
+				}else if(nodes.length == 0){ //Incase of no possible moves at all, we update its status anyways.
+					ants[i].move(current);
+				}else{ //This is the part that takes care of deciding which random node the ant moves to if the other specific moves cant be applied.
+					hasMoved = false; //A value to stop the loop.
+					j = 0;
+					while(!(hasMoved) && j < nodes.length){
+						n = nodes[j]; //We take the specific node we are currently checking 
+						//We do the coinFlip method with the probability from the formula, but are still skipping the previous node the ant was on.
+						if(n != previous && random.coinFlip(formula(n, current, nodes, previous, j))){ 
+							ants[i].move(n);
+							hasMoved = true; //This stops the loop early
 						}else{
-							k = k + 1;						
+							j = j + 1;						
 						}
 						
-						if (hasMoved){ // seperate thing that is only active when an ant moved.
-							graph.raisePheromones(current, ants[j].current(), droppedPheromones);
+						if (hasMoved){ //Seperate thing that is only active when an ant moved.
+							graph.raisePheromones(current, ants[i].current(), droppedPheromones); //Raises the pheromone level on the edge it moved over.
 						}
 					}
 				}
 			
-			if (ants[j].isAtHome() && ants[j].carrying()){ // checks the precondition. if true drop sugar into the colony.
-					ants[j].dropSugar();
-					ants[j].home().topUp(carriedSugar);
-					}
-					}
-			j = j + 1;
-		}
-		
-		
-	}
-	
-	private double formula(Node n, Node current, Node [] nodes){
-		double numerator = graph.pheromoneLevel(current, n) + 1,
-			   denominator = 0,
-			   probability = 0;
-		int i = 0;
-		
-		while(i < nodes.length){
-			denominator = denominator + graph.pheromoneLevel(current, nodes[i]) + 1;
+			if (ants[i].isAtHome() && ants[i].carrying()){ //Checks the precondition. if true drop sugar into the colony.
+					ants[i].dropSugar();
+					ants[i].home().topUp(carriedSugar); //Add sugar to the colony, amount is equal to the the value given when constructing simulator.
+			}
+			}
 			i = i + 1;
 		}
-		probability = numerator / denominator;
-		return probability;
+		
+		
 	}
 }
