@@ -1,3 +1,9 @@
+/**
+*@Supervisor Kasper Beider
+*@author Andreas Rosenstjerne, Kasper Beider og Frederik Dam
+*A program that simulates an ant that has a home colony, along with its positions.
+*@version 1.3
+*/
 public class Ant{
 	private int sugar;
 	private Colony home;
@@ -26,7 +32,7 @@ public class Ant{
 	public void dropSugar(){
 			this.sugar = 0;
 	}
-	//precondition there is an edge between the two nodes
+	// precondition: There exists an edge between the two nodes
 	public void move(Node location){
 		previous = current;
 		current = location; 

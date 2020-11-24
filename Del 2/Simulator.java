@@ -1,6 +1,6 @@
 /**
 *@Supervisor Kasper Beider
-*@author Andreas Rosenstjerne og Frederik Dam
+*@author Andreas Rosenstjerne, Kasper Beider og Frederik Dam
 * Provider class for run simulation that simulates ant colonies, gathering sugar, spreading pheromones, eating and dying.
 * It also serves as the client class for, some of the other classes like Graph and ant.
 * @version 2.4
@@ -35,29 +35,6 @@ public class Simulator{
 		this.graph.tick(); //Calls the method from graph, that lowers the pheromone level on all edges that have pheromones.
 		eat(); 
 		moveAnt();	
-	}
-	
-	/*
-	* A method that takes care of the calculations for the probability of the ants moving to a specific node.
-	* It's parameters are numerous, as to both know the node we wish to check the move for, the current node we are on and its adjacent nodes,
-	* As well as its previous node.
-	*/
-	private double formula(Node n, Node current, Node [] nodes, Node previous, int j){
-		double numerator = graph.pheromoneLevel(current, n) + 1, // Using the graph that we already know, from the constructor, to get the pheromones.
-			   denominator = 0,
-			   probability = 0;
-		int i = j; // Assigning a starting value.
-		
-		// A Loop that gathers the number needed for the denominator of the equation.
-		while(i < nodes.length){
-			if (nodes[i] != previous){ // We use this if to skip over the ants previous node as this node is not a possible move unless specified.
-			// Starting from the node we are looking at in the array, and skipping the ants previous, means we ensure a move.
-			denominator = denominator + graph.pheromoneLevel(current, nodes[i]) + 1;
-			}
-			i = i + 1;
-		}
-		probability = numerator / denominator; // Uses the two numbers to get the probablity. 
-		return probability;
 	}
 	
 	/*
@@ -147,5 +124,29 @@ public class Simulator{
 		}
 		
 		
+	}
+	
+		
+	/*
+	* A method that takes care of the calculations for the probability of the ants moving to a specific node.
+	* It's parameters are numerous, as to both know the node we wish to check the move for, the current node we are on and its adjacent nodes,
+	* As well as its previous node.
+	*/
+	private double formula(Node n, Node current, Node [] nodes, Node previous, int j){
+		double numerator = graph.pheromoneLevel(current, n) + 1, // Using the graph that we already know, from the constructor, to get the pheromones.
+			   denominator = 0,
+			   probability = 0;
+		int i = j; // Assigning a starting value.
+		
+		// A Loop that gathers the number needed for the denominator of the equation.
+		while(i < nodes.length){
+			if (nodes[i] != previous){ // We use this if to skip over the ants previous node as this node is not a possible move unless specified.
+			// Starting from the node we are looking at in the array, and skipping the ants previous, means we ensure a move.
+			denominator = denominator + graph.pheromoneLevel(current, nodes[i]) + 1;
+			}
+			i = i + 1;
+		}
+		probability = numerator / denominator; // Uses the two numbers to get the probablity. 
+		return probability;
 	}
 }

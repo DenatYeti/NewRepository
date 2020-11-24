@@ -1,3 +1,10 @@
+/**
+*@Supervisor Kasper Beider
+*@author Andreas Rosenstjerne, Kasper Beider og Frederik Dam
+*Program that creates paths/edges between nodes.
+*Serves as a provider class for other classes.
+*@version 1.1
+*/
 public class Edge {
 	// declaring the class attributes
 	private int pheromones;

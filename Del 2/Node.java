@@ -1,3 +1,11 @@
+/**
+*@Supervisor Kasper Beider
+*@author Andreas Rosenstjerne, Kasper Beider og Frederik Dam
+* Provider class for multiple other classes
+* Represents a node.
+* @version 1.2
+*/
+
 public class Node{
 	// declares class attributes.
 	private int sugar;
