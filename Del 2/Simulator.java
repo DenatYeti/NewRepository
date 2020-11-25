@@ -55,7 +55,7 @@ public class Simulator{
 						ants[i].move(ants[i].current()); 
 					}else{ // If there isnt sugar in stock we kill the ant.
 						this.ants[i] = null;
-					}
+					}	
 				}
 			}
 			i = i + 1;
@@ -92,8 +92,10 @@ public class Simulator{
 					ants[i].pickUpSugar(); 
 					current.decreaseSugar();
 					ants[i].move(ants[i].previous()); // Do a predetermined move.
+					hasMoved = true;
 				}else if(nodes.length == 1){ //Incase of only one adjacent node, move to that node.
 					ants[i].move(nodes[0]);
+					hasMoved = true;
 				}else if(nodes.length == 0){ //Incase of no possible moves at all, we update its status anyways.
 					ants[i].move(current);
 				}else{ //This is the part that takes care of deciding which random node the ant moves to if the other specific moves cant be applied.
@@ -109,12 +111,12 @@ public class Simulator{
 							j = j + 1;						
 						}
 						
-						if (hasMoved){ //Seperate thing that is only active when an ant moved.
-							graph.raisePheromones(current, ants[i].current(), droppedPheromones); //Raises the pheromone level on the edge it moved over.
-						}
 					}
 				}
-			
+				
+			if (hasMoved){ //Seperate thing that is only active when an ant moved.
+							graph.raisePheromones(current, ants[i].current(), droppedPheromones); //Raises the pheromone level on the edge it moved over.
+						}
 			if (ants[i].isAtHome() && ants[i].carrying()){ //Checks the precondition. if true drop sugar into the colony.
 					ants[i].dropSugar();
 					ants[i].home().topUp(carriedSugar); //Add sugar to the colony, amount is equal to the the value given when constructing simulator.
