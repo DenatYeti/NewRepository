@@ -42,8 +42,7 @@ public class Simulator{
 	*/
 	private void eat () {
 		// Declaring some variables that we assigning later to avoid repeated calls of variables that havent changed.
-		boolean isHome,
-				isStocked;
+		boolean isStocked;
 		
 		int i = 0;
 		while (i < ants.length){ //Going through each individual ant.
@@ -72,7 +71,7 @@ public class Simulator{
 			j = 0;
 		
 		boolean isCarrying,
-				hasMoved;
+				hasMoved = false;
 		
 		Node current,
 			 previous,

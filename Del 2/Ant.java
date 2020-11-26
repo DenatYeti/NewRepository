@@ -45,7 +45,6 @@ public class Ant{
 		}
 	}
 	
-	
 	// Getters for the attributes.
 	public Colony home(){
 		return home; 
@@ -58,6 +57,4 @@ public class Ant{
 	public Node previous(){
 		return previous;
 	}
-	
-	
 }
