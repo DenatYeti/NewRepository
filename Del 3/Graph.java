@@ -93,6 +93,7 @@ public class Graph {
 			}
 			i = i+ 1;
 		}
+		isTrue = false; 
 		while (!isTrue && j < edges.size()){
 			if (target == edges.get(j).source()){
 				if (source == edges.get(j).target()){
@@ -111,7 +112,7 @@ public class Graph {
 			
 		boolean placedSugar = false; 
 		
-		for(int x = 0; x < edges.size() ; i++){
+		for(int x = 0; x < edges.size() ; x++){
 			edges.get(x).decreasePheromones();
 		}
 		
@@ -133,8 +134,9 @@ public class Graph {
 		int i = 0;
 		
 		while (i < edges.size()){
-			if (edges.get(i).source() == node)
-				adjacent = add(adjacent,edges.get(i).target());
+			if (edges.get(i).source() == node){
+				adjacent = add(adjacent, edges.get(i).target());
+			}
 			i = i + 1;
 		}
 		
@@ -142,14 +144,15 @@ public class Graph {
 		
 	}
 	
-	private Node [] add (Node [] array, Node node){
+	private Node [] add (Node [] adjacent, Node node){
 		
-		Node[] newArray = new Node[array.length+1]; // Creates new ant array, of lenght +1
+		Node[] newArray = new Node[adjacent.length+1]; // Creates new node array, of length +1
 		
-		for (int i = 0; i < array.length; i++){ // Loops through the given array, and adds its content to the new ant array
-			newArray[i] = array[i];
+		for (int i = 0; i < adjacent.length; i++){ // Loops through the given array, and adds its content to the new node array
+			newArray[i] = adjacent[i];
 		}
-		newArray [array.length] = node; // Adds a new ant to the array.
+		newArray [adjacent.length] = node; // Adds a the new node to the array.
+		
 		return newArray;
 	}
 
