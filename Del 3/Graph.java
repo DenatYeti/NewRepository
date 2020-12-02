@@ -45,7 +45,15 @@ public class Graph {
 		for(int j = 0; j < width; j++){
 			for(int k = 0; k < depth; k++){
 				if(j-1 >= 0)
-				edges.add(new Edge(nodes[j][k],nodes[j-1][k]));
+					edges.add(new Edge(nodes[j][k],nodes[j-1][k]));
+				if(j + 1 <= width)
+					edges.add(new Edge(nodes[j][k], nodes[j+1][k]));
+				if(k-1 >= 0)
+					edges.add(new Edge(nodes[j][k], nodes[j][k-1]));
+				if(k+1 <= depth)
+					edges.add(new Edge(nodes[j][k], nodes[j][k+1]));
+				
+				
 			}
 		}
 		
