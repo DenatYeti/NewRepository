@@ -1,6 +1,7 @@
 import java.util.ArrayList;
-import java.io.FileReader;
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 public class Graph {
 	
@@ -12,12 +13,53 @@ public class Graph {
 	
 	int average;
 	
+	
 	//Constructor with a file
 	public Graph (String file, Colony [] homes, double sugarProbability, int avgSugar){
 		this.probability = sugarProbability;
 		this.average = avgSugar;
 		
+		String [] array = new String[0];
+		try {
+		File myObj = new File(file);
+		Scanner myReader = new Scanner(myObj);  
+		while (myReader.hasNextLine()) {
+			String data = myReader.nextLine();
+			array = add(array, data);
+		}
+		myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
 		
+		int numberOfNodes = Integer.parseInt(array[0]);
+		
+		this.nodes = new Node[Integer.parseInt(array[0])][1];
+		String [] colonies = array[1].split(" ");
+
+		int i = 0;
+		while(i < homes.length && i < colonies.length){
+			this.nodes [Integer.parseInt(colonies[i])-1][0] = homes[i];
+			i = i + 1;
+		}
+		
+		
+		for(int j = 0; j < numberOfNodes; j++){
+			if (nodes [j][0] == null){
+				if (ran.coinFlip(probability))
+					nodes [j][0] = new Node(ran.randomPoisson(average));
+				else 
+					nodes [j][0] = new Node();
+			}
+		}
+		
+		for(int k = 2; k < array.length; k++){
+			String [] edgesFromFile = array[k].split(" ");
+			
+			edges.add(new Edge(nodes[Integer.parseInt(edgesFromFile[0])-1][0], nodes[Integer.parseInt(edgesFromFile[1])-1][0]));
+			edges.add(new Edge(nodes[Integer.parseInt(edgesFromFile[1])-1][0], nodes[Integer.parseInt(edgesFromFile[0])-1][0]));
+		}
 		
 	}
 	
@@ -167,6 +209,19 @@ public class Graph {
 		
 		return newArray;
 	}
-
+	
+	
+	
+	private String [] add (String [] array, String data){
+		
+		String[] newArray = new String [array.length+1]; // Creates new node array, of length +1
+		
+		for (int i = 0; i < array.length; i++){ // Loops through the given array, and adds its content to the new node array
+			newArray[i] = array[i];
+		}
+		newArray [array.length] = data; // Adds a the new node to the array.
+		
+		return newArray;
+	}
 
 }
