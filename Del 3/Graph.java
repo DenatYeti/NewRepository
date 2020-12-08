@@ -15,6 +15,10 @@ public class Graph {
 	
 	
 	//Constructor with a file
+	/*
+	*Constructor that takes a file 
+	*Precondition: the number of homes in the file has to be the same as the number of Colony homes. 
+	*/
 	public Graph (String file, Colony [] homes, double sugarProbability, int avgSugar){
 		this.probability = sugarProbability;
 		this.average = avgSugar;
@@ -29,22 +33,22 @@ public class Graph {
 		}
 		myReader.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
+			System.out.println("An error occurred when trying to find the file.");
+			System.exit(0);
 		}
 		
 		int numberOfNodes = Integer.parseInt(array[0]);
 		
+		//Creates and places the colonies in the specified places from the file. 
 		this.nodes = new Node[Integer.parseInt(array[0])][1];
 		String [] colonies = array[1].split(" ");
-
 		int i = 0;
 		while(i < homes.length && i < colonies.length){
 			this.nodes [Integer.parseInt(colonies[i])-1][0] = homes[i];
 			i = i + 1;
 		}
 		
-		
+		//Creates nodes the places where there arent any colonies. 
 		for(int j = 0; j < numberOfNodes; j++){
 			if (nodes [j][0] == null){
 				if (ran.coinFlip(probability))
@@ -54,6 +58,8 @@ public class Graph {
 			}
 		}
 		
+		//Loop that adds edges.
+		//Takes one line from the file at a time and add an edge between the nodes. 
 		for(int k = 2; k < array.length; k++){
 			String [] edgesFromFile = array[k].split(" ");
 			
@@ -133,6 +139,10 @@ public class Graph {
 		return z;
 	}
 	
+	/*
+	*Raises the pheromone level in the edge between the source and target nodes given as parameters.
+	*Increases by the amount also given as parameters. 
+	*/
 	public void raisePheromones(Node source, Node target, int amount){
 		int i = 0,
 			j = 0;
@@ -159,6 +169,10 @@ public class Graph {
 		}
 	}
 	
+	/*
+	*Decreases the pheromone level in all edges with pheromone level > 0.
+	*Determines whether there should spawn sugar, and if so where. 
+	*/
 	public void tick(){
 		int amount = 0,
 			i = 0,
@@ -181,6 +195,9 @@ public class Graph {
 		}
 	}
 	
+	/*
+	*Returns a Node array containing all the nodes adjacent to the node given as argument.
+	*/
 	public Node [] adjacentTo(Node node){
 		
 		Node [] adjacent = new Node[0];
@@ -198,6 +215,7 @@ public class Graph {
 		
 	}
 	
+	//Private method that adjacentTo method uses. 
 	private Node [] add (Node [] adjacent, Node node){
 		
 		Node[] newArray = new Node[adjacent.length+1]; // Creates new node array, of length +1
@@ -211,7 +229,7 @@ public class Graph {
 	}
 	
 	
-	
+	//private method that is used to read from a file and add each line to an array. 
 	private String [] add (String [] array, String data){
 		
 		String[] newArray = new String [array.length+1]; // Creates new node array, of length +1
