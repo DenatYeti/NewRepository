@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.io.FileReader;
+import java.util.Scanner;
 
 public class Graph {
 	
@@ -9,6 +11,16 @@ public class Graph {
 	double probability;
 	
 	int average;
+	
+	//Constructor with a file
+	public Graph (String file, Colony [] homes, double sugarProbability, int avgSugar){
+		this.probability = sugarProbability;
+		this.average = avgSugar;
+		
+		
+		
+	}
+	
 	
 	//Constructor with width and depth
 	public Graph (int width, int depth, Colony[] homes, double sugarProbability, int avgSugar){
