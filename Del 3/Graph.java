@@ -14,22 +14,23 @@ public class Graph {
 	int average;
 	
 	
-	//Constructor with a file
+	
 	/*
-	*Constructor that takes a file 
+	*Constructor that takes a file
 	*Precondition: the number of homes in the file has to be the same as the number of Colony homes. 
 	*/
 	public Graph (String file, Colony [] homes, double sugarProbability, int avgSugar){
 		this.probability = sugarProbability;
 		this.average = avgSugar;
 		
+		//Reads from the file and uses a private method to add the data to an array.
 		String [] array = new String[0];
 		try {
 		File myObj = new File(file);
 		Scanner myReader = new Scanner(myObj);  
 		while (myReader.hasNextLine()) {
 			String data = myReader.nextLine();
-			array = add(array, data);
+			array = addLines(array, data);
 		}
 		myReader.close();
 		} catch (FileNotFoundException e) {
@@ -49,6 +50,7 @@ public class Graph {
 		}
 		
 		//Creates nodes the places where there arent any colonies. 
+		//Uses the method randomUtils.coinFlip() to determine whether there should spawn sugar on each node.
 		for(int j = 0; j < numberOfNodes; j++){
 			if (nodes [j][0] == null){
 				if (ran.coinFlip(probability))
@@ -66,11 +68,12 @@ public class Graph {
 			edges.add(new Edge(nodes[Integer.parseInt(edgesFromFile[0])-1][0], nodes[Integer.parseInt(edgesFromFile[1])-1][0]));
 			edges.add(new Edge(nodes[Integer.parseInt(edgesFromFile[1])-1][0], nodes[Integer.parseInt(edgesFromFile[0])-1][0]));
 		}
-		
 	}
 	
 	
-	//Constructor with width and depth
+	/*
+	*Constructor with width and depth
+	*/
 	public Graph (int width, int depth, Colony[] homes, double sugarProbability, int avgSugar){
 		
 		int i = 0,
@@ -112,11 +115,9 @@ public class Graph {
 				if(k - 1 >= 0)
 					edges.add(new Edge(nodes[j][k], nodes[j][k-1]));
 				if(k + 1 < depth)
-					edges.add(new Edge(nodes[j][k], nodes[j][k+1]));
-				
+					edges.add(new Edge(nodes[j][k], nodes[j][k+1]));		
 			}
 		}	
-		
 	}
 	
 	/**
@@ -201,45 +202,36 @@ public class Graph {
 	public Node [] adjacentTo(Node node){
 		
 		Node [] adjacent = new Node[0];
-		
 		int i = 0;
-		
 		while (i < edges.size()){
 			if (edges.get(i).source() == node){
-				adjacent = add(adjacent, edges.get(i).target());
+				adjacent = addNode(adjacent, edges.get(i).target());
 			}
 			i = i + 1;
 		}
-		
 		return adjacent;
-		
 	}
 	
-	//Private method that adjacentTo method uses. 
-	private Node [] add (Node [] adjacent, Node node){
+	//Private method that adjacentTo method uses to add the adjacent nodes to the array. 
+	private Node [] addNode (Node [] adjacent, Node node){
 		
 		Node[] newArray = new Node[adjacent.length+1]; // Creates new node array, of length +1
-		
 		for (int i = 0; i < adjacent.length; i++){ // Loops through the given array, and adds its content to the new node array
 			newArray[i] = adjacent[i];
 		}
 		newArray [adjacent.length] = node; // Adds a the new node to the array.
-		
 		return newArray;
 	}
 	
 	
-	//private method that is used to read from a file and add each line to an array. 
-	private String [] add (String [] array, String data){
+	//private method that is used to add each line to an array. 
+	private String [] addLines (String [] array, String data){
 		
 		String[] newArray = new String [array.length+1]; // Creates new node array, of length +1
-		
 		for (int i = 0; i < array.length; i++){ // Loops through the given array, and adds its content to the new node array
 			newArray[i] = array[i];
 		}
 		newArray [array.length] = data; // Adds a the new node to the array.
-		
 		return newArray;
 	}
-
 }
