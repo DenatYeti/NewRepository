@@ -206,9 +206,9 @@ public class Graph {
 				shouldPlaceSugar = ran.coinFlip(probability);
 		
 		// loop that decreases the pheromone level of all edges.
-		for(int x = 0; x < edges.size() ; x++){
-			if(edges.get(x).pheromones() > 0) // makes sure that we don't remove pheromones from edges with no pheromones.
-				edges.get(x).decreasePheromones();
+		for(int k = 0; k < edges.size() ; k++){
+			if(edges.get(k).pheromones() > 0) // makes sure that we don't remove pheromones from edges with no pheromones.
+				edges.get(k).decreasePheromones();
 		}
 		
 		
