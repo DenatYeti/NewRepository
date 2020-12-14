@@ -13,13 +13,13 @@ import java.io.FileNotFoundException;
 */
 public class Graph {
 	
-	RandomUtils ran = new RandomUtils();
-	Node [][] nodes;
-	ArrayList<Edge> edges = new ArrayList<Edge>();
+	private RandomUtils ran = new RandomUtils();
+	private Node [][] nodes;
+	private ArrayList<Edge> edges = new ArrayList<Edge>();
 	
-	double probability;
+	private double probability;
 	
-	int average;
+	private int average;
 	
 	
 	
@@ -163,6 +163,7 @@ public class Graph {
 	/*
 	*Raises the pheromone level in the edge between the source and target nodes given as parameters.
 	*Increases by the amount also given as parameters. 
+	*Precondition: there has to be an edge between node source and node target. 
 	*/
 	public void raisePheromones(Node source, Node target, int amount){
 		int i = 0,
@@ -233,7 +234,7 @@ public class Graph {
 		int i = 0;
 		//loops through and finds all edges that have the correct source node
 		while (i < edges.size()){
-			if (edges.get(i).source() == node)
+			if (edges.get(i).source() == node){
 				adjacent = addNode(adjacent, edges.get(i).target()); //When an edge is found, we add the target of that edge to the array.
 			}
 			i = i + 1;
