@@ -257,7 +257,7 @@ public class Graph {
 	//private method that is used to add each line to an array. 
 	private String [] addLines (String [] array, String data){
 		
-		String[] newArray = new String [array.length+1]; // Creates new node array, of length +1
+		String[] newArray = new String [array.length+1]; // Creates new Sring array, of length +1
 		for (int i = 0; i < array.length; i++){ // Loops through the given array, and adds its content to the new String array
 			newArray[i] = array[i];
 		}
