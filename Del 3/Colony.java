@@ -7,7 +7,7 @@
 */
 public class Colony extends Node{
 	//Declaring the attribute that is needed
-	int stock;
+	private int stock;
 	
 	//Constructor for colony, that creates a new colony with no sugar in stock
 	public Colony() {

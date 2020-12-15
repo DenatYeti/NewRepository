@@ -54,7 +54,7 @@ public class Graph {
 		int numberOfNodes = Integer.parseInt(array[0]); //calls this here to avoid extra calls of the same unit.
 		
 		//Creates and places the colonies in the specified places from the file. 
-		this.nodes = new Node[Integer.parseInt(array[0])][1];
+		this.nodes = new Node[numberOfNodes][1];
 		String [] colonies = array[1].split(" "); //spliting array index 1, so that each element of the new array is the position of a colony.
 		int i = 0;
 		while(i < homes.length && i < colonies.length){
