@@ -37,8 +37,8 @@ public class Graph {
 		String [] array = new String[0];
 		//try catch to avoid the program crashing without giving the user any information.
 		try {
-		File myObj = new File(file); //assigns the file to a variable.
-		Scanner myReader = new Scanner(myObj);  //uses the scanner to acces everything from the file.
+		File myFile = new File(file); //assigns the file to a variable.
+		Scanner myReader = new Scanner(myFile);  //uses the scanner to acces everything from the file.
 		//Loops through and adds every individual segment to an array so that we can use the information.
 		while (myReader.hasNextLine()) {
 			String data = myReader.nextLine();
